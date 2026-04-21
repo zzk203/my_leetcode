@@ -7,9 +7,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/solution_test",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
