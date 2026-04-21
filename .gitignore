@@ -6,6 +6,9 @@ solution_test
 # VSCode
 .vscode/
 
+# AI generated files
+include/ai.*
+
 # OS
 .DS_Store
 Thumbs.db
