@@ -1,0 +1,11 @@
+# Build output
+solution
+solution_test
+*.o
+
+# VSCode
+# .vscode/
+
+# OS
+.DS_Store
+Thumbs.db
