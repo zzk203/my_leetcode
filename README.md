@@ -1,5 +1,7 @@
 # My LeetCode
 
+> [中文版](./README.zh.md)
+
 ## Usage
 
 ### 1. Auto Generate
