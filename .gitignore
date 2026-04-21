@@ -4,7 +4,7 @@ solution_test
 *.o
 
 # VSCode
-# .vscode/
+.vscode/
 
 # OS
 .DS_Store
