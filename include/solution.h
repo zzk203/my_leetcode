@@ -1,7 +1,7 @@
 #ifndef LEETCODE_SOLUTION_H
 #define LEETCODE_SOLUTION_H
 
-#include "ai.tree.h"
+#include "tree.ai.h"
 
 class Solution {
 public:

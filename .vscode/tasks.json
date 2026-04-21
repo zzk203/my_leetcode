@@ -4,7 +4,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "bash -c 'g++ -std=c++17 -g -I include src/solution.cpp tests/solution_test.cpp -o solution_test -lgtest -lgtest_main -pthread && ./solution_test'",
+            "command": "bash -c 'g++ -std=c++17 -g -I include src/solution.cpp tests/solution_test.ai.cpp -o solution_test -lgtest -lgtest_main -pthread && ./solution_test'",
             "group": { "kind": "build", "isDefault": true },
             "problemMatcher": ["$gcc"],
             "presentation": {
