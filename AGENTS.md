@@ -1,4 +1,4 @@
-# LeetCode Practice — Agent Guide
+# cpp-algo-practice — Agent Guide
 
 ## Project Overview
 
@@ -79,8 +79,8 @@ For OJ problems, data structures are typically not needed (or should be defined 
 - Include `tree.ai.h`, `list.ai.h`, `node.ai.h` only if the signature uses those types.
 
 ```cpp
-#ifndef LEETCODE_SOLUTION_H
-#define LEETCODE_SOLUTION_H
+#ifndef CPP_ALGO_SOLUTION_H
+#define CPP_ALGO_SOLUTION_H
 
 #include <vector>
 #include "tree.ai.h"

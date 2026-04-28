@@ -1,4 +1,4 @@
-# My LeetCode Practice
+# cpp-algo-practice
 
 > [English Version](./README.md)
 

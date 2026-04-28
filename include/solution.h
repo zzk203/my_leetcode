@@ -1,5 +1,5 @@
-#ifndef LEETCODE_SOLUTION_H
-#define LEETCODE_SOLUTION_H
+#ifndef CPP_ALGO_SOLUTION_H
+#define CPP_ALGO_SOLUTION_H
 
 #include <vector>
 
