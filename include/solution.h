@@ -5,7 +5,7 @@
 
 class Solution {
 public:
-    bool searchMatrix(std::vector<std::vector<int>>& matrix, int target);
+    int findPeakElement(std::vector<int>& nums);
 };
 
 #endif

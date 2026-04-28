@@ -2,6 +2,6 @@
 
 using namespace std;
 
-bool Solution::searchMatrix(vector<vector<int>>& matrix, int target) {
-    return false;
+int Solution::findPeakElement(vector<int>& nums) {
+    return 0;
 }

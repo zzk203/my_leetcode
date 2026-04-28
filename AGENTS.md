@@ -46,10 +46,12 @@ Do NOT modify `Makefile`, `.gitignore`, `AGENTS.md`, `README*`, `.vscode/`.
 2. **Clean**: overwrite `solution.h`, `solution.cpp`, `solution_test.ai.cpp`. Delete old content; generate fresh.
 3. **Data structures**: generate only the `.ai.h` files the problem needs (tree / list / node).
 4. **`solution.h`**: `#ifndef` guard, `#include` needed headers and `.ai.h` files, declare class/function.
-5. **`solution.cpp`**: stub body (`return false / 0 / nullptr / {}`).
+5. **`solution.cpp`**: write the **full correct implementation** (needed to verify tests pass).
 6. **`solution_test.ai.cpp`**: ≥5 gtest cases — happy path, edge, boundary, negative, complex. Use `new` for tree/list nodes (leaks OK in tests).
-7. **Verify**: `make clean && make && ./solution_test` — all tests must pass.
-8. **Reset**: delete the implemented body from `solution.cpp`, leaving only the stub for the user.
+7. **Verify + Reset** (do NOT skip reset):
+   a. `make clean && make && ./solution_test` — all tests must pass.
+   b. **Immediately** overwrite `solution.cpp` with a stub (`return false / 0 / nullptr / {}`).
+   c. Confirm stub still compiles: `make clean && make`.
 
 ## Key Constraints
 
