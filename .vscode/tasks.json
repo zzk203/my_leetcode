@@ -2,15 +2,29 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build",
+            "label": "build_lc",
             "type": "shell",
-            "command": "bash -c 'g++ -std=c++17 -g -I include src/solution.cpp tests/solution_test.ai.cpp -o solution_test -lgtest -lgtest_main -pthread && ./solution_test'",
-            "group": { "kind": "build", "isDefault": true },
-            "problemMatcher": ["$gcc"],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            }
+            "command": "make",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "run_lc",
+            "type": "shell",
+            "command": "./solution_test",
+            "group": "test",
+            "dependsOn": [
+                "build_lc"
+            ]
+        },
+        {
+            "label": "debug_lc",
+            "type": "process",
+            "command": "${workspaceFolder}/solution_test",
+            "args": [],
+            "dependsOn": [
+                "build_lc"
+            ]
         }
     ]
 }
