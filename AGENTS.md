@@ -1,159 +1,60 @@
 # cpp-algo-practice — Agent Guide
 
-## Project Overview
+Only ONE problem lives in the repo at a time. When adding a new problem, ALL old solution/test files are overwritten.
 
-A generic C++ practice project supporting two problem modes:
-
-- **LeetCode mode**: user implements a `Solution` class method; agent generates data structures (`*.ai.h`) and gtest cases.
-- **OJ mode**: user implements a function/method; agent generates gtest cases that simulate I/O (stringstream → parse → call → serialize → compare).
-
-**Key rule**: only ONE problem lives in the repo at any time. When adding a new problem, all old solution/test files must be replaced.
-
-## File Structure
+## File Layout
 
 ```
-leetcode/
-├── Makefile                 # Auto-discovers src/*.cpp + tests/*.cpp
+.
+├── Makefile                 # wildcard auto-discovery: src/*.cpp + tests/*.cpp
+├── .gitignore               # *.ai.h / *.ai.cpp are gitignored (regenerated each time)
 ├── include/
-│   ├── solution.h           # Agent-generated declarations
-│   ├── tree.ai.h            # Agent-generated TreeNode
-│   ├── list.ai.h            # Agent-generated ListNode
-│   └── node.ai.h            # Agent-generated graph/N-ary Node
+│   ├── solution.h           # Declarations — agent-generated, user-facing
+│   ├── tree.ai.h            # TreeNode (generate on demand)
+│   ├── list.ai.h            # ListNode (generate on demand)
+│   └── node.ai.h            # Graph/N-ary Node (generate on demand)
 ├── src/
-│   └── solution.cpp         # Agent-generated stub → user fills in
+│   └── solution.cpp         # Stub → user fills in the body
 ├── tests/
-│   └── solution_test.ai.cpp # Agent-generated gtest cases
+│   └── solution_test.ai.cpp # gtest cases
 ├── .vscode/
-│   ├── tasks.json           # Build (make) & run tasks
-│   └── launch.json          # F5 debug
-├── AGENTS.md                # This file
-├── README.md                # English user docs
-└── README.zh.md             # Chinese user docs
+│   ├── tasks.json
+│   └── launch.json
+└── README.md / README.zh.md
 ```
 
-## When User Says "Implement problem X" (Agent Workflow)
+Do NOT modify `Makefile`, `.gitignore`, `AGENTS.md`, `README*`, `.vscode/`.
 
-Follow these steps **in order**:
+## Naming: `.ai.*` vs plain
 
-### Step 1: Identify Problem
-
-- If user provides a URL, fetch it to read the problem description.
-- If user provides a problem title/number, determine the source platform (LeetCode / OJ).
-- Read the problem statement carefully: constraints, input format, output format, examples.
-
-### Step 2: Determine Mode
-
-- **LeetCode**: problem provides a class API (`Solution` with method signature). The user only writes the method body.
-- **OJ**: problem expects a full program reading stdin and writing stdout. Map the I/O format to a function signature for `solution.cpp`.
-
-### Step 3: Clean Old Files
-
-Remove all existing declarations and implementations:
-
-```bash
-# Overwrite include/solution.h with new content
-# Overwrite src/solution.cpp with new stub
-# Overwrite tests/solution_test.ai.cpp with new test cases
-```
-
-Do NOT delete `Makefile`, `.gitignore`, `AGENTS.md`, `README.md`, `README.zh.md`, `.vscode/`.
-
-### Step 4: Generate Data Structures (if needed)
-
-For LeetCode problems, check which data structures the problem uses:
-
-| Structure | File | Content |
+| File | Git tracked? | Editable by user |
 |---|---|---|
-| Binary tree node | `include/tree.ai.h` | `struct TreeNode { int val; TreeNode *left, *right; }` |
-| Linked list node | `include/list.ai.h` | `struct ListNode { int val; ListNode *next; }` |
-| Graph / N-ary node | `include/node.ai.h` | `struct Node { int val; vector<Node*> neighbors; }` |
+| `solution.h` | Yes | No (reads sig only) |
+| `solution.cpp` | Yes | **Yes — implements logic** |
+| `*.ai.h` / `*.ai.cpp` | No (gitignored) | No (AI-only, regenerated) |
 
-Only generate the `.ai.h` files that the current problem actually needs. Do not generate unused files.
+`solution.h` deliberately omits the `.ai` suffix so it stays git-tracked. The `.ai.*` convention marks files that are fully regenerated and gitignored.
 
-For OJ problems, data structures are typically not needed (or should be defined in `solution.h` directly if internal).
+## Mode
 
-### Step 5: Generate `include/solution.h`
+- **LeetCode**: `Solution` class with a method in `solution.h`. User fills the body in `solution.cpp`.
+- **OJ**: I/O-based problem mapped to a function signature; tests simulate stdin/stdout via stringstream.
 
-- Write the `#ifndef` guard, `#include` necessary headers.
-- Declare the class/function.
-- Include `tree.ai.h`, `list.ai.h`, `node.ai.h` only if the signature uses those types.
+## Workflow: Agent Generates a Problem
 
-```cpp
-#ifndef CPP_ALGO_SOLUTION_H
-#define CPP_ALGO_SOLUTION_H
+1. **Identify**: fetch URL or use problem title/number. Read constraints and examples.
+2. **Clean**: overwrite `solution.h`, `solution.cpp`, `solution_test.ai.cpp`. Delete old content; generate fresh.
+3. **Data structures**: generate only the `.ai.h` files the problem needs (tree / list / node).
+4. **`solution.h`**: `#ifndef` guard, `#include` needed headers and `.ai.h` files, declare class/function.
+5. **`solution.cpp`**: stub body (`return false / 0 / nullptr / {}`).
+6. **`solution_test.ai.cpp`**: ≥5 gtest cases — happy path, edge, boundary, negative, complex. Use `new` for tree/list nodes (leaks OK in tests).
+7. **Verify**: `make clean && make && ./solution_test` — all tests must pass.
+8. **Reset**: delete the implemented body from `solution.cpp`, leaving only the stub for the user.
 
-#include <vector>
-#include "tree.ai.h"
+## Key Constraints
 
-class Solution {
-public:
-    bool hasPathSum(TreeNode* root, int targetSum);
-};
-
-#endif
-```
-
-### Step 6: Generate `src/solution.cpp`
-
-- Include `"solution.h"`.
-- Implement each method with a **stub body** that compiles but returns a default value (`return {}` / `return false` / `return 0` / `return nullptr`).
-
-```cpp
-#include "solution.h"
-
-bool Solution::hasPathSum(TreeNode* root, int targetSum) {
-    return false;
-}
-```
-
-### Step 7: Generate `tests/solution_test.ai.cpp`
-
-- Use Google Test framework.
-- Include `"solution.h"`.
-- Write **at least 5 test cases** covering:
-
-| Test type | Example |
-|---|---|
-| Basic happy path | Example 1 from problem |
-| Edge case | Empty input, single element, extreme values |
-| Boundary | Minimum/maximum constraints |
-| Negative case | Not found, false condition |
-| Complex case | Larger input, stress within constraints |
-
-- **Must respect problem constraints**: do not create inputs that violate the problem's node count, value range, or structure requirements.
-- For **LeetCode mode**: construct inputs and assert return values directly.
-- For **OJ mode**: construct input strings, parse via a helper similar to the problem's I/O, call the solution, serialize result, and compare with expected output string.
-
-```cpp
-#include <gtest/gtest.h>
-#include "solution.h"
-
-TEST(HasPathSumTest, BasicCase) {
-    // Build tree [5,4,8,11,null,13,4,null,null,null,null,null,1]
-    TreeNode n1(5);
-    // ... build tree ...
-    Solution s;
-    EXPECT_TRUE(s.hasPathSum(&n1, 22));
-}
-
-TEST(HasPathSumTest, EmptyTree) {
-    Solution s;
-    EXPECT_FALSE(s.hasPathSum(nullptr, 0));
-}
-```
-
-### Step 8: Verify
-
-1. Run `make clean && make && ./solution_test` — all tests must pass.
-2. If tests fail, debug the generated test code (not the stub — the stub is intentionally empty).
-3. Once all tests pass, **delete the correct implementation** from `solution.cpp` and leave only the stub. The user will fill it in.
-
-## Notes
-
-- **Never** modify `Makefile`, `.vscode/`, `README*`, `AGENTS.md` unless explicitly asked.
-- **Never** delete `*.ai.h` files that other problems might need — but since we keep only one problem at a time, it's safe to overwrite. If a data structure is no longer needed, it should still remain (it doesn't hurt).
-- **Test files must be self-contained**: no external test data files.
-- **Compilation**: `make clean && make && ./solution_test`
-- **Formatting**: use consistent indentation (2 or 4 spaces). No trailing whitespace.
-- **C++ standard**: C++17.
-- **Memory**: when building trees/lists in test cases, allocate with `new`. Tests are short-lived so leaks are acceptable in test code.
+- C++17, `g++`, Google Test (`-lgtest -lgtest_main -pthread`).
+- `solution.h` / `solution.cpp` are git-tracked; `*.ai.*` files are gitignored.
+- Test `#include` only `"solution.h"`. Use `#include <gtest/gtest.h>`.
+- Tests must be self-contained — no external data files.
+- Memory leaks from `new` in tests are acceptable.
